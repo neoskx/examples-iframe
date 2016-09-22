@@ -1,2 +1,5 @@
-# examples-iframe
-research iframe's performance, security and so on
+examples iframe
+========================
+research iframe features, performance, security and so on
+
+it based on [React Starter Kit](https://github.com/kriasoft/react-starter-kit)
