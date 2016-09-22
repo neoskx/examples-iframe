@@ -9,13 +9,14 @@
 
 import React, { PropTypes } from 'react';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
+import Iframe from '../../components/Iframe'
 import s from './Home.css';
 
 function Home({  }) {
   return (
     <div className={s.root}>
       <div className={s.container}>
-        
+        <Iframe></Iframe>
       </div>
     </div>
   );
