@@ -41,6 +41,8 @@ export default {
     // TODO: move this logic to the `next` function
     do {
       route = await next();
+      console.log(context);
+      console.log(route);
     } while (!route);
 
     return {

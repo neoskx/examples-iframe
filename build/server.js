@@ -140,7 +140,7 @@ module.exports =
   
   var _routes2 = _interopRequireDefault(_routes);
   
-  var _assets = __webpack_require__(108);
+  var _assets = __webpack_require__(109);
   
   var _assets2 = _interopRequireDefault(_assets);
   
@@ -178,34 +178,35 @@ module.exports =
   //
   // Authentication
   // -----------------------------------------------------------------------------
-  app.use((0, _expressJwt2.default)({
-    secret: _config.auth.jwt.secret,
-    credentialsRequired: false,
-    getToken: function getToken(req) {
-      return req.cookies.id_token;
-    }
-  }));
-  app.use(_passport2.default.initialize());
+  // app.use(expressJwt({
+  //   secret: auth.jwt.secret,
+  //   credentialsRequired: false,
+  //   getToken: req => req.cookies.id_token,
+  // }));
+  // app.use(passport.initialize());
   
-  app.get('/login/facebook', _passport2.default.authenticate('facebook', { scope: ['email', 'user_location'], session: false }));
-  app.get('/login/facebook/return', _passport2.default.authenticate('facebook', { failureRedirect: '/login', session: false }), function (req, res) {
-    var expiresIn = 60 * 60 * 24 * 180; // 180 days
-    var token = _jsonwebtoken2.default.sign(req.user, _config.auth.jwt.secret, { expiresIn: expiresIn });
-    res.cookie('id_token', token, { maxAge: 1000 * expiresIn, httpOnly: true });
-    res.redirect('/');
-  });
+  // app.get('/login/facebook',
+  //   passport.authenticate('facebook', { scope: ['email', 'user_location'], session: false })
+  // );
+  // app.get('/login/facebook/return',
+  //   passport.authenticate('facebook', { failureRedirect: '/login', session: false }),
+  //   (req, res) => {
+  //     const expiresIn = 60 * 60 * 24 * 180; // 180 days
+  //     const token = jwt.sign(req.user, auth.jwt.secret, { expiresIn });
+  //     res.cookie('id_token', token, { maxAge: 1000 * expiresIn, httpOnly: true });
+  //     res.redirect('/');
+  //   }
+  // );
   
   //
   // Register API middleware
   // -----------------------------------------------------------------------------
-  app.use('/graphql', (0, _expressGraphql2.default)(function (req) {
-    return {
-      schema: _schema2.default,
-      graphiql: true,
-      rootValue: { request: req },
-      pretty: ("development") !== 'production'
-    };
-  }));
+  // app.use('/graphql', expressGraphQL(req => ({
+  //   schema,
+  //   graphiql: true,
+  //   rootValue: { request: req },
+  //   pretty: process.env.NODE_ENV !== 'production',
+  // })));
   
   //
   // Register server-side rendering middleware
@@ -245,6 +246,7 @@ module.exports =
                         route = _context.sent;
                         data = (0, _extends3.default)({}, route);
   
+                        console.log(route.component);
                         data.children = _server2.default.renderToString(route.component);
                         data.style = [].concat((0, _toConsumableArray3.default)(css)).join('');
                         data.script = _assets2.default.main.js;
@@ -254,7 +256,7 @@ module.exports =
                         res.status(route.status || 200);
                         res.send('<!doctype html>' + html);
   
-                      case 11:
+                      case 12:
                       case 'end':
                         return _context.stop();
                     }
@@ -294,6 +296,7 @@ module.exports =
   
   app.use(function (err, req, res, next) {
     // eslint-disable-line no-unused-vars
+    console.log("======Error");
     console.log(pe.render(err)); // eslint-disable-line no-console
     var html = _server2.default.renderToStaticMarkup(_react2.default.createElement(
       _Html2.default,
@@ -2106,23 +2109,23 @@ module.exports =
   
   var _home2 = _interopRequireDefault(_home);
   
-  var _contact = __webpack_require__(88);
+  var _contact = __webpack_require__(89);
   
   var _contact2 = _interopRequireDefault(_contact);
   
-  var _login = __webpack_require__(92);
+  var _login = __webpack_require__(93);
   
   var _login2 = _interopRequireDefault(_login);
   
-  var _register = __webpack_require__(96);
+  var _register = __webpack_require__(97);
   
   var _register2 = _interopRequireDefault(_register);
   
-  var _content = __webpack_require__(100);
+  var _content = __webpack_require__(101);
   
   var _content2 = _interopRequireDefault(_content);
   
-  var _notFound = __webpack_require__(104);
+  var _notFound = __webpack_require__(105);
   
   var _notFound2 = _interopRequireDefault(_notFound);
   
@@ -2173,13 +2176,16 @@ module.exports =
               case 3:
                 route = _context.sent;
   
-              case 4:
+                console.log(context);
+                console.log(route);
+  
+              case 6:
                 if (!route) {
                   _context.next = 1;
                   break;
                 }
   
-              case 5:
+              case 7:
                 return _context.abrupt('return', (0, _extends3.default)({}, route, {
   
                   // Override the result of child route with extensions
@@ -2192,7 +2198,7 @@ module.exports =
                   )
                 }));
   
-              case 6:
+              case 8:
               case 'end':
                 return _context.stop();
             }
@@ -3121,10 +3127,6 @@ module.exports =
   
   var _regenerator2 = _interopRequireDefault(_regenerator);
   
-  var _stringify = __webpack_require__(27);
-  
-  var _stringify2 = _interopRequireDefault(_stringify);
-  
   var _asyncToGenerator2 = __webpack_require__(5);
   
   var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
@@ -3151,48 +3153,16 @@ module.exports =
       var _this = this;
   
       return (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee() {
-        var resp, _ref, data;
-  
         return _regenerator2.default.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                _context.next = 2;
-                return (0, _fetch2.default)('/graphql', {
-                  method: 'post',
-                  headers: {
-                    Accept: 'application/json',
-                    'Content-Type': 'application/json'
-                  },
-                  body: (0, _stringify2.default)({
-                    query: '{news{title,link,contentSnippet}}'
-                  }),
-                  credentials: 'include'
-                });
-  
-              case 2:
-                resp = _context.sent;
-                _context.next = 5;
-                return resp.json();
-  
-              case 5:
-                _ref = _context.sent;
-                data = _ref.data;
-  
-                if (!(!data || !data.news)) {
-                  _context.next = 9;
-                  break;
-                }
-  
-                throw new Error('Failed to load the news feed.');
-  
-              case 9:
                 return _context.abrupt('return', {
                   title: 'React Starter Kit',
-                  component: _react2.default.createElement(_Home2.default, { news: data.news })
+                  component: _react2.default.createElement(_Home2.default, null)
                 });
   
-              case 10:
+              case 1:
               case 'end':
                 return _context.stop();
             }
@@ -3219,6 +3189,10 @@ module.exports =
     value: true
   });
   
+  var _objectDestructuringEmpty2 = __webpack_require__(86);
+  
+  var _objectDestructuringEmpty3 = _interopRequireDefault(_objectDestructuringEmpty2);
+  
   var _react = __webpack_require__(14);
   
   var _react2 = _interopRequireDefault(_react);
@@ -3227,46 +3201,19 @@ module.exports =
   
   var _withStyles2 = _interopRequireDefault(_withStyles);
   
-  var _Home = __webpack_require__(86);
+  var _Home = __webpack_require__(87);
   
   var _Home2 = _interopRequireDefault(_Home);
   
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
   
   function Home(_ref) {
-    var news = _ref.news;
+    (0, _objectDestructuringEmpty3.default)(_ref);
   
     return _react2.default.createElement(
       'div',
       { className: _Home2.default.root },
-      _react2.default.createElement(
-        'div',
-        { className: _Home2.default.container },
-        _react2.default.createElement(
-          'h1',
-          { className: _Home2.default.title },
-          'React.js News'
-        ),
-        _react2.default.createElement(
-          'ul',
-          { className: _Home2.default.news },
-          news.map(function (item, index) {
-            return _react2.default.createElement(
-              'li',
-              { key: index, className: _Home2.default.newsItem },
-              _react2.default.createElement(
-                'a',
-                { href: item.link, className: _Home2.default.newsTitle },
-                item.title
-              ),
-              _react2.default.createElement('span', {
-                className: _Home2.default.newsDesc,
-                dangerouslySetInnerHTML: { __html: item.contentSnippet }
-              })
-            );
-          })
-        )
-      )
+      _react2.default.createElement('div', { className: _Home2.default.container })
     );
   } /**
      * React Starter Kit (https://www.reactstarterkit.com/)
@@ -3289,10 +3236,16 @@ module.exports =
 
 /***/ },
 /* 86 */
+/***/ function(module, exports) {
+
+  module.exports = require("babel-runtime/helpers/objectDestructuringEmpty");
+
+/***/ },
+/* 87 */
 /***/ function(module, exports, __webpack_require__) {
 
   
-      var content = __webpack_require__(87);
+      var content = __webpack_require__(88);
       var insertCss = __webpack_require__(25);
   
       if (typeof content === 'string') {
@@ -3322,7 +3275,7 @@ module.exports =
     
 
 /***/ },
-/* 87 */
+/* 88 */
 /***/ function(module, exports, __webpack_require__) {
 
   exports = module.exports = __webpack_require__(24)();
@@ -3343,7 +3296,7 @@ module.exports =
   };
 
 /***/ },
-/* 88 */
+/* 89 */
 /***/ function(module, exports, __webpack_require__) {
 
   'use strict';
@@ -3356,7 +3309,7 @@ module.exports =
   
   var _react2 = _interopRequireDefault(_react);
   
-  var _Contact = __webpack_require__(89);
+  var _Contact = __webpack_require__(90);
   
   var _Contact2 = _interopRequireDefault(_Contact);
   
@@ -3386,7 +3339,7 @@ module.exports =
   };
 
 /***/ },
-/* 89 */
+/* 90 */
 /***/ function(module, exports, __webpack_require__) {
 
   'use strict';
@@ -3403,7 +3356,7 @@ module.exports =
   
   var _withStyles2 = _interopRequireDefault(_withStyles);
   
-  var _Contact = __webpack_require__(90);
+  var _Contact = __webpack_require__(91);
   
   var _Contact2 = _interopRequireDefault(_Contact);
   
@@ -3444,11 +3397,11 @@ module.exports =
   exports.default = (0, _withStyles2.default)(_Contact2.default)(Contact);
 
 /***/ },
-/* 90 */
+/* 91 */
 /***/ function(module, exports, __webpack_require__) {
 
   
-      var content = __webpack_require__(91);
+      var content = __webpack_require__(92);
       var insertCss = __webpack_require__(25);
   
       if (typeof content === 'string') {
@@ -3478,7 +3431,7 @@ module.exports =
     
 
 /***/ },
-/* 91 */
+/* 92 */
 /***/ function(module, exports, __webpack_require__) {
 
   exports = module.exports = __webpack_require__(24)();
@@ -3495,7 +3448,7 @@ module.exports =
   };
 
 /***/ },
-/* 92 */
+/* 93 */
 /***/ function(module, exports, __webpack_require__) {
 
   'use strict';
@@ -3508,7 +3461,7 @@ module.exports =
   
   var _react2 = _interopRequireDefault(_react);
   
-  var _Login = __webpack_require__(93);
+  var _Login = __webpack_require__(94);
   
   var _Login2 = _interopRequireDefault(_Login);
   
@@ -3538,7 +3491,7 @@ module.exports =
   };
 
 /***/ },
-/* 93 */
+/* 94 */
 /***/ function(module, exports, __webpack_require__) {
 
   'use strict';
@@ -3555,7 +3508,7 @@ module.exports =
   
   var _withStyles2 = _interopRequireDefault(_withStyles);
   
-  var _Login = __webpack_require__(94);
+  var _Login = __webpack_require__(95);
   
   var _Login2 = _interopRequireDefault(_Login);
   
@@ -3723,11 +3676,11 @@ module.exports =
   exports.default = (0, _withStyles2.default)(_Login2.default)(Login);
 
 /***/ },
-/* 94 */
+/* 95 */
 /***/ function(module, exports, __webpack_require__) {
 
   
-      var content = __webpack_require__(95);
+      var content = __webpack_require__(96);
       var insertCss = __webpack_require__(25);
   
       if (typeof content === 'string') {
@@ -3757,7 +3710,7 @@ module.exports =
     
 
 /***/ },
-/* 95 */
+/* 96 */
 /***/ function(module, exports, __webpack_require__) {
 
   exports = module.exports = __webpack_require__(24)();
@@ -3784,7 +3737,7 @@ module.exports =
   };
 
 /***/ },
-/* 96 */
+/* 97 */
 /***/ function(module, exports, __webpack_require__) {
 
   'use strict';
@@ -3797,7 +3750,7 @@ module.exports =
   
   var _react2 = _interopRequireDefault(_react);
   
-  var _Register = __webpack_require__(97);
+  var _Register = __webpack_require__(98);
   
   var _Register2 = _interopRequireDefault(_Register);
   
@@ -3827,7 +3780,7 @@ module.exports =
   };
 
 /***/ },
-/* 97 */
+/* 98 */
 /***/ function(module, exports, __webpack_require__) {
 
   'use strict';
@@ -3844,7 +3797,7 @@ module.exports =
   
   var _withStyles2 = _interopRequireDefault(_withStyles);
   
-  var _Register = __webpack_require__(98);
+  var _Register = __webpack_require__(99);
   
   var _Register2 = _interopRequireDefault(_Register);
   
@@ -3885,11 +3838,11 @@ module.exports =
   exports.default = (0, _withStyles2.default)(_Register2.default)(Register);
 
 /***/ },
-/* 98 */
+/* 99 */
 /***/ function(module, exports, __webpack_require__) {
 
   
-      var content = __webpack_require__(99);
+      var content = __webpack_require__(100);
       var insertCss = __webpack_require__(25);
   
       if (typeof content === 'string') {
@@ -3919,7 +3872,7 @@ module.exports =
     
 
 /***/ },
-/* 99 */
+/* 100 */
 /***/ function(module, exports, __webpack_require__) {
 
   exports = module.exports = __webpack_require__(24)();
@@ -3936,7 +3889,7 @@ module.exports =
   };
 
 /***/ },
-/* 100 */
+/* 101 */
 /***/ function(module, exports, __webpack_require__) {
 
   'use strict';
@@ -3961,7 +3914,7 @@ module.exports =
   
   var _react2 = _interopRequireDefault(_react);
   
-  var _Content = __webpack_require__(101);
+  var _Content = __webpack_require__(102);
   
   var _Content2 = _interopRequireDefault(_Content);
   
@@ -4048,7 +4001,7 @@ module.exports =
       */
 
 /***/ },
-/* 101 */
+/* 102 */
 /***/ function(module, exports, __webpack_require__) {
 
   'use strict';
@@ -4065,7 +4018,7 @@ module.exports =
   
   var _withStyles2 = _interopRequireDefault(_withStyles);
   
-  var _Content = __webpack_require__(102);
+  var _Content = __webpack_require__(103);
   
   var _Content2 = _interopRequireDefault(_Content);
   
@@ -4108,11 +4061,11 @@ module.exports =
   exports.default = (0, _withStyles2.default)(_Content2.default)(Content);
 
 /***/ },
-/* 102 */
+/* 103 */
 /***/ function(module, exports, __webpack_require__) {
 
   
-      var content = __webpack_require__(103);
+      var content = __webpack_require__(104);
       var insertCss = __webpack_require__(25);
   
       if (typeof content === 'string') {
@@ -4142,7 +4095,7 @@ module.exports =
     
 
 /***/ },
-/* 103 */
+/* 104 */
 /***/ function(module, exports, __webpack_require__) {
 
   exports = module.exports = __webpack_require__(24)();
@@ -4159,7 +4112,7 @@ module.exports =
   };
 
 /***/ },
-/* 104 */
+/* 105 */
 /***/ function(module, exports, __webpack_require__) {
 
   'use strict';
@@ -4172,7 +4125,7 @@ module.exports =
   
   var _react2 = _interopRequireDefault(_react);
   
-  var _NotFound = __webpack_require__(105);
+  var _NotFound = __webpack_require__(106);
   
   var _NotFound2 = _interopRequireDefault(_NotFound);
   
@@ -4203,7 +4156,7 @@ module.exports =
   };
 
 /***/ },
-/* 105 */
+/* 106 */
 /***/ function(module, exports, __webpack_require__) {
 
   'use strict';
@@ -4220,7 +4173,7 @@ module.exports =
   
   var _withStyles2 = _interopRequireDefault(_withStyles);
   
-  var _NotFound = __webpack_require__(106);
+  var _NotFound = __webpack_require__(107);
   
   var _NotFound2 = _interopRequireDefault(_NotFound);
   
@@ -4261,11 +4214,11 @@ module.exports =
   exports.default = (0, _withStyles2.default)(_NotFound2.default)(NotFound);
 
 /***/ },
-/* 106 */
+/* 107 */
 /***/ function(module, exports, __webpack_require__) {
 
   
-      var content = __webpack_require__(107);
+      var content = __webpack_require__(108);
       var insertCss = __webpack_require__(25);
   
       if (typeof content === 'string') {
@@ -4295,7 +4248,7 @@ module.exports =
     
 
 /***/ },
-/* 107 */
+/* 108 */
 /***/ function(module, exports, __webpack_require__) {
 
   exports = module.exports = __webpack_require__(24)();
@@ -4312,7 +4265,7 @@ module.exports =
   };
 
 /***/ },
-/* 108 */
+/* 109 */
 /***/ function(module, exports) {
 
   module.exports = require("./assets");
